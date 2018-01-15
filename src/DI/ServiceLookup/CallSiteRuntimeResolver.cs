@@ -30,9 +30,20 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
             }
             catch (Exception ex) when (ex.InnerException != null)
             {
-                ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
-                // The above line will always throw, but the compiler requires we throw explicitly.
-                throw;
+                try
+                {
+                    System.Diagnostics.Debugger.Break();
+                    return constructorCallSite.ConstructorInfo.Invoke(parameterValues);
+                }
+                catch (Exception ex1) when (ex1.InnerException != null)
+                {
+                    ExceptionDispatchInfo.Capture(ex1.InnerException).Throw();
+                    // The above line will always throw, but the compiler requires we throw explicitly.
+                    throw;
+                }
+                //ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+                //// The above line will always throw, but the compiler requires we throw explicitly.
+                //throw;
             }
         }
 
